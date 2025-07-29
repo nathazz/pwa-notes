@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PWA</title>
     <script type="module" src="/js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="manifest" href="manifest.json" />
   </head>
@@ -16,7 +14,6 @@
       <h1>PWA notes</h1>
       <nav>
         <button id="export-btn">Export</button>
-        <button id="import-btn">Import</button>
       </nav>
     </header>
 
@@ -39,23 +36,10 @@
           <button type="submit">Save Note</button>
         </form>
       </section>
-      <dialog id="export-modal">
-        <h3>Export Note Content (QR Code)</h3>
-        <canvas id="qrcode-canvas"></canvas>
-        <button id="close-export">Close</button>
-      </dialog>
-
       <section aria-labelledby="entries-title">
         <h2 id="entries-title">My Entries</h2>
         <div id="notes-list"></div>
       </section>
-
-      <div id="export-overlay" style="display: none">
-        <div class="overlay-content">
-          <div id="overlay-qrcode"></div>
-          <button id="close-export-overlay">Close</button>
-        </div>
-      </div>
     </main>
 
     <footer>© <span id="year"></span> Pwa Notes</footer>
