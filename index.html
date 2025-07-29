@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWA</title>
+    <script type="module" src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+
+  <body>
+    <header>
+      <h1>PWA notes</h1>
+      <nav>
+        <button id="export-btn">Export</button>
+        <button id="import-btn">Import</button>
+      </nav>
+    </header>
+
+    <main>
+      <section aria-labelledby="new-entry-title">
+        <h2 id="entries-title">New Entry</h2>
+        <form id="form">
+          <label for="entry-title">Title</label>
+          <input id="entry-title" name="title" type="text" required />
+
+          <label for="entry-content">Content</label>
+          <textarea id="entry-content" name="content" required></textarea>
+
+          <label for="entry-file">Send File</label>
+          <input
+            id="entry-attachment"
+            type="file"
+            accept="image/*,audio/*,application/zip,application/x-rar-compressed,application/x-7z-compressed"
+          />
+          <button type="submit">Save Note</button>
+        </form>
+      </section>
+      <dialog id="export-modal">
+        <h3>Export Note Content (QR Code)</h3>
+        <canvas id="qrcode-canvas"></canvas>
+        <button id="close-export">Close</button>
+      </dialog>
+
+      <section aria-labelledby="entries-title">
+        <h2 id="entries-title">My Entries</h2>
+        <div id="notes-list"></div>
+      </section>
+
+      <div id="export-overlay" style="display: none">
+        <div class="overlay-content">
+          <div id="overlay-qrcode"></div>
+          <button id="close-export-overlay">Close</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>© <span id="year"></span> Pwa Notes</footer>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/js/sw.js")
+          .then(() => {
+            console.log("register server worker!");
+          })
+          .catch((error) => {
+            console.error("Error to register:", error);
+          });
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        let currentYear = new Date().getFullYear();
+        document.getElementById("year").innerText = currentYear;
+      });
+    </script>
+  </body>
+</html>
