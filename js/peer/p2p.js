@@ -2,45 +2,43 @@ import { getNotebyID } from "../db/funcs/getNotes.js";
 
 const peer = new Peer();
 
-peer.on('open', (id) => {
+peer.on("open", (id) => {
   document.getElementById("id-peer").innerText = `Your ID: ${id}`;
 });
 
 let incomingConn = null;
-let currentConnection = null; 
+let currentConnection = null;
 
-peer.on('connection', (conn) => {
+peer.on("connection", (conn) => {
   incomingConn = conn;
 
-  document.getElementById('connected-peer-id').innerText = conn.peer;
-  document.getElementById('connection-info').style.display = 'block';
+  document.getElementById("connected-peer-id").innerText = conn.peer;
+  document.getElementById("connection-info").style.display = "block";
 
-  conn.on('data', async (zipBlob) => {
+  conn.on("data", async (zipBlob) => {
     const zip = await JSZip.loadAsync(zipBlob);
     const title = await zip.file("title.txt").async("string");
     const content = await zip.file("content.txt").async("string");
     const fileBlob = await zip.file("attachment.bin").async("blob");
-
-  
   });
 
-  conn.on('close', () => {
+  conn.on("close", () => {
     alert(`Peer ${conn.peer} disconnected.`);
-    document.getElementById('connection-info').style.display = 'none';
+    document.getElementById("connection-info").style.display = "none";
     incomingConn = null;
   });
 
-  conn.on('error', () => {
+  conn.on("error", () => {
     alert(`Connection error with peer ${conn.peer}`);
-    document.getElementById('connection-info').style.display = 'none';
+    document.getElementById("connection-info").style.display = "none";
     incomingConn = null;
   });
 });
 
-document.getElementById('disconnect-btn').addEventListener('click', () => {
+document.getElementById("disconnect-btn").addEventListener("click", () => {
   if (incomingConn) {
     incomingConn.close();
-    document.getElementById('connection-info').style.display = 'none';
+    document.getElementById("connection-info").style.display = "none";
     incomingConn = null;
   }
 });
@@ -67,17 +65,17 @@ document.getElementById("connect-btn").addEventListener("click", () => {
 
   currentConnection = peer.connect(targetPeerId);
 
-  currentConnection.on('open', () => {
+  currentConnection.on("open", () => {
     statusEl.textContent = "Connected";
     statusEl.className = "status-indicator connected";
   });
 
-  currentConnection.on('error', () => {
+  currentConnection.on("error", () => {
     statusEl.textContent = "Disconnected";
     statusEl.className = "status-indicator disconnected";
   });
 
-  currentConnection.on('close', () => {
+  currentConnection.on("close", () => {
     statusEl.textContent = "Disconnected";
     statusEl.className = "status-indicator disconnected";
   });
@@ -109,7 +107,7 @@ document.getElementById("send-note").addEventListener("click", async () => {
   zip.file("content.txt", note.content || "");
 
   if (note.file) {
-    const response = await fetch(note.file); 
+    const response = await fetch(note.file);
     const fileBlob = await response.blob();
     zip.file("attachment.bin", fileBlob);
   }

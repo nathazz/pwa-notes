@@ -7,9 +7,8 @@ export async function getAllNotes() {
   const store = tx.objectStore("notes");
 
   return new Promise((resolve, reject) => {
-   
     const request = store.getAll();
-    
+
     request.onsuccess = () => {
       resolve(request.result);
     };
@@ -20,22 +19,18 @@ export async function getAllNotes() {
   });
 }
 
-export async function getNotebyID(id){
-  const db = await openDB();
+export async function getNotebyID(id) {
+  if (!id) {
+    return;
+  }
 
+  const db = await openDB();
   const tx = db.transaction("notes", "readonly");
   const store = tx.objectStore("notes");
 
   return new Promise((resolve, reject) => {
- 
     const request = store.get(id);
-
-    request.onsuccess = () => {
-      resolve(request.result);
-    };
-
-    request.onerror = () => {
-      reject(request.error);
-    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
   });
 }

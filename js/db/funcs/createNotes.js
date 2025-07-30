@@ -4,8 +4,8 @@ export async function addNoteToDB(note) {
   const db = await openDB();
 
   return new Promise((resolve, reject) => {
-    const tx = db.transaction('notes', 'readwrite');
-    const store = tx.objectStore('notes');
+    const tx = db.transaction("notes", "readwrite");
+    const store = tx.objectStore("notes");
 
     const request = store.add(note);
 

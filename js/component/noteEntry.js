@@ -1,6 +1,6 @@
 class NoteEntry extends HTMLElement {
   static get observedAttributes() {
-    return ['id','title', 'content', 'date', 'filetype'];
+    return ["id", "title", "content", "date", "filetype"];
   }
 
   constructor() {
@@ -48,37 +48,62 @@ class NoteEntry extends HTMLElement {
     }
 
     this.shadow.innerHTML = `
-      <style>
-        article {
-          border: 1px solid #ddd;
-          padding: 1rem;
-          border-radius: 8px;
-          background: #fff;
-          margin-bottom: 1rem;
-        }
-          
-        h3 {
-          margin: 0 0 0.5rem 0;
-        }
+    <style>
+      article {
+        border: 1px solid #ddd;
+        padding: 1rem;
+        border-radius: 8px;
+        background: #fff;
+        margin-bottom: 1rem;
+        position: relative;
+      }
 
-        small {
-          display: block;
-          color: #888;
-          margin-bottom: 0.5rem;
-        }
+      h3 {
+        margin: 0 0 0.5rem 0;
+      }
 
-        span {
-          color: #3b82f6;;
-        }
-      </style>
-      <article>
-        <h3> <span>${id}</span> - ${title}</h3>
-        <small>${this.formatDate(date)}</small>
-        <p>${content}</p>
-        ${fileContent}
-      </article>
-    `;
+      small {
+        display: block;
+        color: #888;
+        margin-bottom: 0.5rem;
+      }
+
+      span {
+        color: #3b82f6;
+      }
+
+      button.delete-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+    <article>
+      <button class="delete-btn">Delete</button>
+      <h3><span>${id}</span> - ${title}</h3>
+      <small>${this.formatDate(date)}</small>
+      <p>${content}</p>
+      ${fileContent}
+    </article>
+  `;
+
+    const deleteButton = this.shadow.querySelector(".delete-btn");
+    deleteButton.addEventListener("click", () => {
+      this.dispatchEvent(
+        new CustomEvent("deletenote", {
+          detail: { id: Number(id) },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
   }
 }
 
-customElements.define('note-entry', NoteEntry);
+customElements.define("note-entry", NoteEntry);
