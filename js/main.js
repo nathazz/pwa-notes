@@ -1,2 +1,3 @@
-import './DB/events/submit.js';
-import './Component/noteEntry.js';
+import './events/submit.js';
+import './component/noteEntry.js';
+import './peer/p2p.js'

@@ -1,6 +1,6 @@
 class NoteEntry extends HTMLElement {
   static get observedAttributes() {
-    return ['title', 'content', 'date', 'filetype'];
+    return ['id','title', 'content', 'date', 'filetype'];
   }
 
   constructor() {
@@ -27,6 +27,7 @@ class NoteEntry extends HTMLElement {
   }
 
   render() {
+    const id = this.getAttribute("id") || "";
     const title = this.getAttribute("title") || "";
     const content = this.getAttribute("content") || "";
     const date = this.getAttribute("date") || "";
@@ -65,9 +66,13 @@ class NoteEntry extends HTMLElement {
           color: #888;
           margin-bottom: 0.5rem;
         }
+
+        span {
+          color: #3b82f6;;
+        }
       </style>
       <article>
-        <h3>${title}</h3>
+        <h3> <span>${id}</span> - ${title}</h3>
         <small>${this.formatDate(date)}</small>
         <p>${content}</p>
         ${fileContent}

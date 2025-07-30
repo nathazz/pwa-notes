@@ -7,13 +7,19 @@
     <script type="module" src="/js/main.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="manifest" href="manifest.json" />
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   </head>
 
   <body>
     <header>
       <h1>PWA notes</h1>
       <nav>
-        <button id="export-btn">Export</button>
+        <p id="connection-info" style="display: none">
+          Connected peer: <span id="connected-peer-id"></span>
+        </p>
+
+        <button id="export-btn">Send File</button>
       </nav>
     </header>
 
@@ -25,7 +31,7 @@
           <input id="entry-title" name="title" type="text" required />
 
           <label for="entry-content">Content</label>
-          <textarea id="entry-content" name="content" required></textarea>
+          <textarea id="entry-content" name="content"></textarea>
 
           <label for="entry-file">Send File</label>
           <input
@@ -40,6 +46,36 @@
         <h2 id="entries-title">My Entries</h2>
         <div id="notes-list"></div>
       </section>
+
+      <div id="peer-modal" class="modal hidden">
+        <div class="modal-content">
+          <h3>Send Note</h3>
+          <h5 id="id-peer"></h5>
+          <label for="peer-id">Receiver Peer ID:</label>
+          <input type="text" id="peer-id" placeholder="abc123..." />
+
+          <label for="note-id">Note ID:</label>
+          <input type="text" id="note-id" placeholder="e.g., note123" />
+
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+              margin-top: 0.5rem;
+            "
+          >
+            <button class="button-modal" id="connect-btn">Connect</button>
+            <button id="disconnect-btn" class="button-modal">Disconnect</button>
+            <span id="connection-status" class="status-indicator disconnected"
+              ></span
+            >
+          </div>
+
+          <button class="button-modal" id="send-note">Send</button>
+          <button class="button-modal" id="close-modal">Cancel</button>
+        </div>
+      </div>
     </main>
 
     <footer>© <span id="year"></span> Pwa Notes</footer>

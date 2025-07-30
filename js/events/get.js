@@ -1,4 +1,4 @@
-import { getAllNotes } from "../funcs/getNotes.js";
+import { getAllNotes } from "../db/funcs/getNotes.js";
 
 export async function renderNotes() {
   const notes = await getAllNotes();
@@ -6,12 +6,13 @@ export async function renderNotes() {
   container.innerHTML = '';
 
   if (notes.length === 0) {
-    container.innerHTML = '<p> No notes yet</p>';
+    container.innerHTML = '<p> No notes yet...</p>';
     return;
   }
 
   notes.forEach(note => {
     const entry = document.createElement('note-entry');
+    entry.setAttribute('id', note.id)
     entry.setAttribute('title', note.title);
     entry.setAttribute('content', note.content);
     entry.setAttribute('date', note.date);
