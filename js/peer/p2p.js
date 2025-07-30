@@ -1,36 +1,60 @@
+import { addNoteToDB } from "../db/funcs/createNotes.js";
 import { getNotebyID } from "../db/funcs/getNotes.js";
+import { renderNotes } from "../events/renderNotes.js";
 
 const peer = new Peer();
-
-peer.on("open", (id) => {
-  document.getElementById("id-peer").innerText = `Your ID: ${id}`;
-});
 
 let incomingConn = null;
 let currentConnection = null;
 
+peer.on("open", (id) => {
+  document.getElementById("id-peer").innerText = `Your ID: ${id}`;
+  document.getElementById("disconnect-btn").style.display = "none";
+});
+
 peer.on("connection", (conn) => {
   incomingConn = conn;
 
-  document.getElementById("connected-peer-id").innerText = conn.peer;
-  document.getElementById("connection-info").style.display = "block";
+  document.getElementById("export-btn").innerText =
+    `Connected peer: ${conn.peer}`;
+  document.getElementById("disconnect-btn").style.display = "inline-block";
 
-  conn.on("data", async (zipBlob) => {
-    const zip = await JSZip.loadAsync(zipBlob);
-    const title = await zip.file("title.txt").async("string");
-    const content = await zip.file("content.txt").async("string");
-    const fileBlob = await zip.file("attachment.bin").async("blob");
+  conn.on("data", async (data) => {
+    const { meta, file } = data;
+
+    let finalBlob = null;
+
+    if (file) {
+      finalBlob = new Blob([file], { type: meta.fileType || undefined });
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(finalBlob);
+      downloadLink.download = meta.title || "note-file";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    await addNoteToDB({
+      title: meta.title,
+      content: meta.content,
+      date: new Date(meta.date),
+      file: finalBlob,
+    });
+
+    await renderNotes();
   });
 
   conn.on("close", () => {
     alert(`Peer ${conn.peer} disconnected.`);
-    document.getElementById("connection-info").style.display = "none";
     incomingConn = null;
+    document.getElementById("export-btn").innerText = "Send File";
+    document.getElementById("disconnect-btn").style.display = "none";
   });
 
   conn.on("error", () => {
     alert(`Connection error with peer ${conn.peer}`);
-    document.getElementById("connection-info").style.display = "none";
+    document.getElementById("export-btn").innerText = "Send File";
     incomingConn = null;
   });
 });
@@ -38,9 +62,18 @@ peer.on("connection", (conn) => {
 document.getElementById("disconnect-btn").addEventListener("click", () => {
   if (incomingConn) {
     incomingConn.close();
-    document.getElementById("connection-info").style.display = "none";
     incomingConn = null;
   }
+  if (currentConnection) {
+    currentConnection.close();
+    currentConnection = null;
+  }
+
+  document.getElementById("disconnect-btn").style.display = "none";
+  document.getElementById("export-btn").innerText = "Send File";
+  const statusEl = document.getElementById("connection-status");
+  statusEl.textContent = "Disconnected";
+  statusEl.className = "status-indicator disconnected";
 });
 
 document.getElementById("export-btn").addEventListener("click", () => {
@@ -85,7 +118,7 @@ document.getElementById("send-note").addEventListener("click", async () => {
   const noteId = document.getElementById("note-id").value.trim();
   const statusEl = document.getElementById("connection-status");
 
-  if (!currentConnection || currentConnection.open === false) {
+  if (!currentConnection || !currentConnection.open) {
     alert("You must connect to a peer first.");
     return;
   }
@@ -95,28 +128,38 @@ document.getElementById("send-note").addEventListener("click", async () => {
     return;
   }
 
-  const note = await getNotebyID(noteId);
-
+  const note = await getNotebyID(Number(noteId));
   if (!note) {
     alert("Note not found.");
     return;
   }
 
-  const zip = new JSZip();
-  zip.file("title.txt", note.title || "Untitled");
-  zip.file("content.txt", note.content || "");
+  let fileBlob = null;
 
-  if (note.file) {
-    const response = await fetch(note.file);
-    const fileBlob = await response.blob();
-    zip.file("attachment.bin", fileBlob);
+  if (note.file instanceof Blob) {
+    fileBlob = note.file;
+  } else if (typeof note.file === "string") {
+    try {
+      const response = await fetch(note.file);
+      fileBlob = await response.blob();
+    } catch (err) {
+      console.warn(err);
+    }
   }
 
-  const zipBlob = await zip.generateAsync({ type: "blob" });
+  const payload = {
+    meta: {
+      title: note.title || "Untitled",
+      content: note.content || "",
+      date: new Date().toISOString(),
+      fileType: fileBlob?.type || "",
+    },
+    file: fileBlob || null,
+  };
 
-  currentConnection.send(zipBlob);
+  currentConnection.send(payload);
+
   statusEl.textContent = "File sent";
   statusEl.className = "status-indicator sent";
-
   document.getElementById("peer-modal").classList.add("hidden");
 });

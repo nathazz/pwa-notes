@@ -34,7 +34,7 @@ form.addEventListener("submit", async (event) => {
   }
 
   try {
-    const id = await addNoteToDB({
+    await addNoteToDB({
       title,
       content,
       date: new Date(),
