@@ -18,3 +18,4 @@ PWA Notes is a Progressive Web Application that allows users to share their note
    ```bash
    git clone https://github.com/your-username/pwa-notes.git
    cd pwa-notes
+   ```

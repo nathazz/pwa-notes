@@ -2,7 +2,11 @@ import { addNoteToDB } from "../db/funcs/createNotes.js";
 import { getNotebyID } from "../db/funcs/getNotes.js";
 import { renderNotes } from "../events/renderNotes.js";
 
-const peer = new Peer();
+const peer = new Peer(undefined, {
+  config: {
+    iceServers: [],
+  },
+});
 
 let incomingConn = null;
 let currentConnection = null;
