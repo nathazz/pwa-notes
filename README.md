@@ -11,11 +11,3 @@ PWA Notes is a Progressive Web Application that allows users to share their note
 - PWA installable on mobile and desktop
 - No backend – all logic runs entirely in the browser
 
-## Getting Started
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/pwa-notes.git
-   cd pwa-notes
-   ```
