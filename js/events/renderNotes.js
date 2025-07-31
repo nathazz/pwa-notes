@@ -3,12 +3,19 @@ import { getAllNotes } from "../db/funcs/getNotes.js";
 export async function renderNotes() {
   const notes = await getAllNotes();
   const container = document.getElementById("notes-list");
-  container.innerHTML = "";
+
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
 
   if (notes.length === 0) {
-    container.innerHTML = "<p> No notes yet...</p>";
+    const empty = document.createElement("p");
+    empty.textContent = "No notes yet...";
+    container.appendChild(empty);
     return;
   }
+
+  const fragment = document.createDocumentFragment();
 
   notes.forEach((note) => {
     const entry = document.createElement("note-entry");
@@ -22,10 +29,14 @@ export async function renderNotes() {
       entry.file = note.file;
     }
 
-    container.appendChild(entry);
+    fragment.appendChild(entry);
   });
+
+  container.appendChild(fragment);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  renderNotes();
+  customElements.whenDefined("note-entry").then(() => {
+    renderNotes();
+  });
 });

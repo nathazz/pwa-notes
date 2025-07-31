@@ -17,8 +17,10 @@ class NoteEntry extends HTMLElement {
     this.render();
   }
 
-  attributeChangedCallback() {
-    this.render();
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this.render();
+    }
   }
 
   formatDate(dateStr) {
@@ -39,7 +41,7 @@ class NoteEntry extends HTMLElement {
       const url = URL.createObjectURL(this._file);
 
       if (filetype.startsWith("image/")) {
-        fileContent = `<img src="${url}" alt="Image" style="max-width: 100%; margin-top: 0.5rem;" />`;
+        fileContent = `<img src="${url}" class="note-image" alt="Image" style="max-width: 75%; max-height:150px, margin: 0.75rem auto 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);" />`;
       } else if (filetype.startsWith("audio/")) {
         fileContent = `<audio controls src="${url}" style="margin-top: 0.5rem;"></audio>`;
       } else {

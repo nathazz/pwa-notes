@@ -19,8 +19,7 @@ peer.on("open", (id) => {
 peer.on("connection", (conn) => {
   incomingConn = conn;
 
-  document.getElementById("export-btn").innerText =
-    `Connected peer: ${conn.peer}`;
+  document.getElementById("export-btn").innerText = `Connected: ${conn.peer}`;
   document.getElementById("disconnect-btn").style.display = "inline-block";
 
   conn.on("data", async (data) => {

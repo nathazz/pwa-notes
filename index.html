@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,12 @@
     <script type="module" src="/js/main.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/favicon-32x32.png"
+    />
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   </head>
 
@@ -33,7 +38,7 @@
           <input
             id="entry-attachment"
             type="file"
-            accept="image/*,audio/*,application/zip,application/x-rar-compressed,application/x-7z-compressed"
+            accept="image/*,audio/*,application/zip,application/x-rar-compressed,application/x-7z-compressed,application/pdf,text/csv,text/plain,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           />
           <button type="submit">Save Note</button>
         </form>
@@ -47,30 +52,32 @@
         <div class="modal-content">
           <h3>Send Note</h3>
           <h5 id="id-peer"></h5>
+
           <label for="peer-id">Receiver Peer ID:</label>
           <input type="text" id="peer-id" placeholder="abc123..." />
 
           <label for="note-id">Note ID:</label>
           <input type="text" id="note-id" placeholder="e.g., note123" />
 
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              gap: 1rem;
-              margin-top: 0.5rem;
-            "
-          >
-            <button class="button-modal" id="connect-btn">Connect</button>
-            <button id="disconnect-btn" class="button-modal">Disconnect</button>
+          <div class="connection-controls">
+            <button class="button-modal primary" id="connect-btn">
+              Connect
+            </button>
+            <button class="button-modal danger" id="disconnect-btn">
+              Disconnect
+            </button>
             <span
               id="connection-status"
               class="status-indicator disconnected"
             ></span>
           </div>
 
-          <button class="button-modal" id="send-note">Send</button>
-          <button class="button-modal" id="close-modal">Cancel</button>
+          <div class="modal-actions">
+            <button class="button-modal success" id="send-note">Send</button>
+            <button class="button-modal secondary" id="close-modal">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </main>
