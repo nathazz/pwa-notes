@@ -14,6 +14,18 @@ let currentConnection = null;
 peer.on("open", (id) => {
   document.getElementById("id-peer").innerText = `Your ID: ${id}`;
   document.getElementById("disconnect-btn").style.display = "none";
+
+  const qrcodeContainer = document.getElementById("qrcode");
+  qrcodeContainer.innerHTML = "";
+
+  new QRCode(qrcodeContainer, {
+    text: id,
+    width: 80,
+    height: 80,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H,
+  });
 });
 
 peer.on("connection", (conn) => {

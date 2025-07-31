@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PWA</title>
     <script type="module" src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="manifest" href="manifest.json" />
     <link
@@ -50,9 +51,19 @@
 
       <div id="peer-modal" class="modal hidden">
         <div class="modal-content">
-          <h3>Send Note</h3>
-          <h5 id="id-peer"></h5>
+          <h5 style="color: #007bff" id="id-peer"></h5>
 
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              margin-top: 5px;
+              margin-bottom: 8px;
+            "
+          >
+            <h5>Your ID - QR</h5>
+            <div id="qrcode"></div>
+          </div>
           <label for="peer-id">Receiver Peer ID:</label>
           <input type="text" id="peer-id" placeholder="abc123..." />
 
