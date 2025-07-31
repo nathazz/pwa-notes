@@ -41,60 +41,114 @@ class NoteEntry extends HTMLElement {
       const url = URL.createObjectURL(this._file);
 
       if (filetype.startsWith("image/")) {
-        fileContent = `<img src="${url}" class="note-image" alt="Image" style="max-width: 75%; max-height: 150px; margin: 0.75rem auto 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);" />
-      `;
+        fileContent = `<img src="${url}" class="note-image" alt="Image" />`;
       } else if (filetype.startsWith("audio/")) {
-        fileContent = `<audio controls src="${url}" style="margin-top: 0.5rem;"></audio>`;
+        fileContent = `<audio controls src="${url}" class="note-audio"></audio>`;
       } else {
-        fileContent = `<a href="${url}" download style="display: block; margin-top: 0.5rem;">📎 Download File</a>`;
+        fileContent = `<a href="${url}" download class="note-download">📎 Download File</a>`;
       }
     }
 
     this.shadow.innerHTML = `
-    <style>
-      article {
-        border: 1px solid #ddd;
-        padding: 1rem;
-        border-radius: 8px;
-        background: #fff;
-        margin-bottom: 1rem;
-        position: relative;
-      }
+      <style>
+        :host {
+          display: block;
+        }
 
-      h3 {
-        margin: 0 0 0.5rem 0;
-      }
+        article {
+          border: 1px solid var(--border, #e2e8f0);
+          border-left: 4px solid var(--primary, #0ea5e9);
+          padding: 1.25rem;
+          border-radius: var(--radius, 12px);
+          background: var(--card, #ffffff);
+          box-shadow: var(--shadow, 0 1px 3px rgba(0,0,0,0.1));
+          margin-bottom: 1.25rem;
+          position: relative;
+          transition: var(--transition, all 0.2s ease);
+        }
 
-      small {
-        display: block;
-        color: #888;
-        margin-bottom: 0.5rem;
-      }
+        article:hover {
+          box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0,0,0,0.1));
+          transform: translateY(-2px);
+        }
 
-      span {
-        color: #3b82f6;
-      }
+        h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--text, #1e293b);
+        }
 
-      button.delete-btn {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        background: #ef4444;
-        color: white;
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-    </style>
-    <article>
-      <button class="delete-btn">Delete</button>
-      <h3><span>${id}</span> - ${title}</h3>
-      <small>${this.formatDate(date)}</small>
-      <p>${content}</p>
-      ${fileContent}
-    </article>
-  `;
+        span {
+          color: var(--primary-dark, #0284c7);
+        }
+
+        small {
+          display: block;
+          color: var(--text-light, #64748b);
+          margin-bottom: 0.5rem;
+          font-size: 0.875rem;
+        }
+
+        p {
+          color: var(--text, #1e293b);
+          line-height: 1.5;
+        }
+
+        .note-image {
+          display: block;
+          max-width: 100%;
+          max-height: 180px;
+          margin: 1rem auto 0;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .note-audio {
+          display: block;
+          margin-top: 1rem;
+          width: 100%;
+        }
+
+        .note-download {
+          display: inline-block;
+          margin-top: 1rem;
+          color: var(--primary, #0ea5e9);
+          text-decoration: none;
+          font-weight: 600;
+        }
+
+        .note-download:hover {
+          text-decoration: underline;
+        }
+
+        button.delete-btn {
+          position: absolute;
+          top: 0.75rem;
+          right: 0.75rem;
+          background: #ef4444;
+          color: white;
+          border: none;
+          padding: 0.4rem 0.75rem;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          transition: background 0.2s;
+        }
+
+        button.delete-btn:hover {
+          background: #dc2626;
+        }
+      </style>
+      <article>
+        <button class="delete-btn">Delete</button>
+        <h3><span>${id}</span> - ${title}</h3>
+        <small>${this.formatDate(date)}</small>
+        <p>${content}</p>
+        ${fileContent}
+      </article>
+    `;
 
     const deleteButton = this.shadow.querySelector(".delete-btn");
     deleteButton.addEventListener("click", () => {
