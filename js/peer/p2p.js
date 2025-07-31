@@ -4,7 +4,7 @@ import { renderNotes } from "../events/renderNotes.js";
 
 const peer = new Peer(undefined, {
   config: {
-    iceServers: [],
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   },
 });
 
@@ -113,7 +113,21 @@ document.getElementById("connect-btn").addEventListener("click", () => {
 
   currentConnection = peer.connect(targetPeerId);
 
+  let timedOut = false;
+
+  const timeout = setTimeout(() => {
+    if (!currentConnection?.open) {
+      timedOut = true;
+      statusEl.textContent = "Timeout. Peer may be offline.";
+      statusEl.className = "status-indicator disconnected";
+      currentConnection?.close();
+    }
+  }, 10000);
+
   currentConnection.on("open", () => {
+    if (timedOut) return;
+    clearTimeout(timeout);
+
     statusEl.textContent = "Connected";
     statusEl.className = "status-indicator connected";
   });
