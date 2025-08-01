@@ -15,6 +15,7 @@
       href="/assets/favicon-32x32.png"
     />
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
   </head>
 
   <body>
@@ -61,7 +62,12 @@
               margin-bottom: 8px;
             "
           >
-            <h5>Your ID - QR</h5>
+            <p
+              id="open-scanner"
+              style="cursor: pointer; color: #007bff; margin-top: 10px"
+            >
+              Scan QRCode
+            </p>
             <div id="qrcode"></div>
           </div>
           <label for="peer-id">Receiver Peer ID:</label>
@@ -89,6 +95,26 @@
               Cancel
             </button>
           </div>
+        </div>
+      </div>
+
+      <div id="scanner-modal" class="scanner-modal hidden">
+        <div class="modal-content" style="text-align: center">
+          <h4>Scan QR Code</h4>
+          <div
+            id="reader"
+            style="
+              width: 285px;
+              margin: auto;
+              background: white;
+              padding: 12px;
+              border-radius: 8px;
+            "
+          ></div>
+          <div id="result-qr" style="margin-top: 10px"></div>
+          <button class="button-modal secondary" id="close-scanner">
+            Close
+          </button>
         </div>
       </div>
     </main>
