@@ -10,7 +10,6 @@ document.getElementById("open-scanner").addEventListener("click", () => {
 
   scanner.render(
     (result) => {
-
       if (!uuidV4Regex.test(result)) {
         alert("Invalid Peer Code!");
         return;
@@ -23,7 +22,7 @@ document.getElementById("open-scanner").addEventListener("click", () => {
     },
     (error) => {
       console.warn("Scan error", error);
-    }
+    },
   );
 });
 
