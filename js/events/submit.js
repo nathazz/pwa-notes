@@ -27,7 +27,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     if (file.size > MAX_SIZE) {
-      alert("File too large! Maximum allowed size is 15 MB..");
+      alert("File too large! Maximum allowed size is 85 MB..");
       fileInput.value = "";
       return;
     }
