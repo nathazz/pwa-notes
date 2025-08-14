@@ -17,6 +17,8 @@ document.getElementById("open-scanner").addEventListener("click", () => {
 
       document.getElementById("peer-id").value = result;
       scanner.clear();
+
+      document.getElementById("connect-btn").click();
       document.getElementById("scanner-modal").classList.add("hidden");
       document.getElementById("reader").innerHTML = "";
     },

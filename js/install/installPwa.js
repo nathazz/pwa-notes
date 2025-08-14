@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    n;
     btn.style.display = "inline-block";
     setLayout(true);
   });
