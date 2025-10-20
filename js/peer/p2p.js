@@ -1,6 +1,7 @@
 import { addNoteToDB } from "../db/funcs/createNotes.js";
 import { getNotebyID } from "../db/funcs/getNotes.js";
 import { renderNotes } from "../events/renderNotes.js";
+import { uuidV4Regex } from "../utils/constants.js";
 
 const peer = new Peer(undefined, {
   config: {
@@ -10,8 +11,10 @@ const peer = new Peer(undefined, {
 
 let incomingConn = null;
 let currentConnection = null;
+let homeID = null;
 
 peer.on("open", (id) => {
+  homeID = id;
   document.getElementById("id-peer").innerText = `Your ID: ${id}`;
   document.getElementById("disconnect-btn").style.display = "none";
 
@@ -31,12 +34,17 @@ peer.on("open", (id) => {
 peer.on("connection", (conn) => {
   incomingConn = conn;
 
-  document.getElementById("export-btn").innerText = `Connected: ${conn.peer}`;
-  document.getElementById("disconnect-btn").style.display = "inline-block";
+  const exportBtn = document.getElementById("export-btn");
+  const disconnectBtn = document.getElementById("disconnect-btn");
+  const statusEl = document.getElementById("connection-status");
+
+  exportBtn.innerText = `Connected: ${conn.peer}`;
+  disconnectBtn.style.display = "inline-block";
+  statusEl.textContent = "Connected";
+  statusEl.className = "status-indicator connected";
 
   conn.on("data", async (data) => {
     const { meta, file } = data;
-
     let finalBlob = null;
 
     if (file) {
@@ -63,14 +71,19 @@ peer.on("connection", (conn) => {
   conn.on("close", () => {
     alert(`Peer ${conn.peer} disconnected.`);
     incomingConn = null;
-    document.getElementById("export-btn").innerText = "Send File";
-    document.getElementById("disconnect-btn").style.display = "none";
+    exportBtn.innerText = "Send File";
+    disconnectBtn.style.display = "none";
+    statusEl.textContent = "Disconnected";
+    statusEl.className = "status-indicator disconnected";
   });
 
-  conn.on("error", () => {
+  conn.on("error", (err) => {
+    console.error("Connection error:", err);
     alert(`Connection error with peer ${conn.peer}`);
-    document.getElementById("export-btn").innerText = "Send File";
     incomingConn = null;
+    exportBtn.innerText = "Send File";
+    statusEl.textContent = "Disconnected";
+    statusEl.className = "status-indicator disconnected";
   });
 });
 
@@ -84,9 +97,9 @@ document.getElementById("disconnect-btn").addEventListener("click", () => {
     currentConnection = null;
   }
 
+  const statusEl = document.getElementById("connection-status");
   document.getElementById("disconnect-btn").style.display = "none";
   document.getElementById("export-btn").innerText = "Send File";
-  const statusEl = document.getElementById("connection-status");
   statusEl.textContent = "Disconnected";
   statusEl.className = "status-indicator disconnected";
 });
@@ -108,13 +121,22 @@ document.getElementById("connect-btn").addEventListener("click", () => {
     return;
   }
 
+  if (!uuidV4Regex.test(targetPeerId)) {
+    alert("Invalid Peer Code!");
+    return;
+  }
+
+  if (homeID === targetPeerId) {
+    alert("Please, don't try to put your own ID");
+    return;
+  }
+
   statusEl.textContent = "Connecting...";
   statusEl.className = "status-indicator connecting";
 
   currentConnection = peer.connect(targetPeerId);
 
   let timedOut = false;
-
   const timeout = setTimeout(() => {
     if (!currentConnection?.open) {
       timedOut = true;
@@ -127,12 +149,12 @@ document.getElementById("connect-btn").addEventListener("click", () => {
   currentConnection.on("open", () => {
     if (timedOut) return;
     clearTimeout(timeout);
-
     statusEl.textContent = "Connected";
     statusEl.className = "status-indicator connected";
   });
 
-  currentConnection.on("error", () => {
+  currentConnection.on("error", (err) => {
+    console.error("Peer connection error:", err);
     statusEl.textContent = "Disconnected";
     statusEl.className = "status-indicator disconnected";
   });
@@ -168,12 +190,8 @@ document.getElementById("send-note").addEventListener("click", async () => {
   if (note.file instanceof Blob) {
     fileBlob = note.file;
   } else if (typeof note.file === "string") {
-    try {
-      const response = await fetch(note.file);
-      fileBlob = await response.blob();
-    } catch (err) {
-      console.warn(err);
-    }
+    const response = await fetch(note.file);
+    fileBlob = await response.blob();
   }
 
   const payload = {
@@ -186,9 +204,15 @@ document.getElementById("send-note").addEventListener("click", async () => {
     file: fileBlob || null,
   };
 
-  currentConnection.send(payload);
-
-  statusEl.textContent = "File sent";
-  statusEl.className = "status-indicator sent";
-  document.getElementById("peer-modal").classList.add("hidden");
+  try {
+    currentConnection.send(payload);
+    statusEl.textContent = "File sent";
+    statusEl.className = "status-indicator sent";
+    document.getElementById("peer-modal").classList.add("hidden");
+  } catch (err) {
+    console.error("Failed to send note:", err);
+    alert("Error sending note. Please try again.");
+    statusEl.textContent = "Error";
+    statusEl.className = "status-indicator disconnected";
+  }
 });

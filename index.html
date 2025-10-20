@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,12 +12,12 @@
       sizes="32x32"
       href="/assets/favicon-32x32.png"
     />
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script
       src="https://unpkg.com/html5-qrcode"
       type="text/javascript"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script type="module" src="/js/main.js"></script>
   </head>
 
@@ -109,7 +109,7 @@
             style="
               width: 285px;
               margin: auto;
-              background: white;
+              background: rgb(255, 255, 255);
               padding: 12px;
               border-radius: 8px;
             "
@@ -128,7 +128,6 @@
       </button>
       <p>© <span id="year"></span> Pwa Notes</p>
     </footer>
-
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker

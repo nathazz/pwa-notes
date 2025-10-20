@@ -11,5 +11,4 @@ PWA Notes is a Progressive Web Application that allows users to share their note
 - PWA installable on mobile and desktop
 - No backend – all logic runs entirely in the browser
 
-
 **Obs:** The Scanner of QR Code is not compatible with all navigators

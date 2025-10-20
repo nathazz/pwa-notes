@@ -1,0 +1,24 @@
+{
+  "name": "pwa",
+  "version": "1.0.0",
+  "description": "PWA Notes is a Progressive Web Application that allows users to share their notes directly between devices using peer-to-peer communication. It uses **WebRTC (via PeerJS)** for file transfer and **IndexedDB** for local storage.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathazz/pwa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nathazz/pwa/issues"
+  },
+  "homepage": "https://github.com/nathazz/pwa#readme",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
